@@ -20,15 +20,28 @@ class Commands():
         return my_environ
 
 
+    def is_file_or_directory_error(self, filename):
+        error_msg = 'cd : Not a Directory' if os.path.isfile(filename) else 'cd : Directory not found'
+        return error_msg
+
     def change_directory(self, command, my_environ):
+        error_msg = ''
+
         if len(command) == 1:
             os.chdir('/')
         else:
             if command[1] == '~':
-                os.chdir(os.my_environ['HOME'])
+                os.chdir(my_environ['HOME'])
+                error_msg = my_environ['HOME']
+            elif command[1] == '-':
+                os.chdir(my_environ['OLDPWD'])
+                error_msg = my_environ['OLDPWD']
             else:
-                os.chdir(command[1])
-        return (switch_paths(my_environ))
+                try:
+                    os.chdir(command[1])
+                except (FileNotFoundError, NotADirectoryError):
+                    error_msg = self.is_file_or_directory_error(command[1])
+        return (self.switch_paths(my_environ)), error_msg
 
 
     def echo(self, command, my_environ):
@@ -38,36 +51,47 @@ class Commands():
             if command[i][0] == '$':
                 try:
                     print(my_environ[command[i][1:]], end=' ')
+                    return (my_environ[command[i][1:]] + '\n')
                 except KeyError:
                     print('Error : variable not found', end='')
-           else:
+                    return ("Error : variable not found\n")
+            else:
                 print(command[i], end=' ')
+                return ('')
             i += 1
         print('\n', end='')        
 
 
     def print_env(self, command, my_environ):
+        env = ''
         for key, val in my_environ.items():
-            print(key,'=',val);
+            val = key +'='+val;
+            env = env + val + '\n'
+        return (env)
 
 
     def set_env(self, command, my_environ):
+        error_msg = ''
         if len(command) != 3:
+            error_msg = "Usage : setenv [VARIABLE] [VALUE]"
             print('Usage : setenv [VARIABLE] [VALUE]')
         else:
             my_environ[command[1]] = command[2]
-        return my_environ
+        return my_environ, error_msg
 
 
     def unset_env(self, command, my_environ):
+        error_msg = ''
         if len(command) != 2:
+            error_msg = "Usage: unsetenv [VARIABLE]"
             print('Usage: unsetenv [VARIABLE]')
         else:
             try:
                 del my_environ[command[1]]
             except KeyError:
+                error_msg = "Error : variable not found"
                 print('Error : variable not found')
-        return my_environ
+        return my_environ, error_msg
 
 
 
@@ -76,19 +100,21 @@ class Commands():
 
 def parse(command, ShellCommands, my_environ):
     comm_args = command.split()
+    output = ''
     
     if comm_args[0] == 'cd':
-        my_environ = ShellCommands.change_directory(comm_args, my_environ)
+        my_environ, output = ShellCommands.change_directory(comm_args, my_environ)
     elif comm_args[0] == 'echo':
-        ShellCommands.echo(comm_args, my_environ)
+        output = ShellCommands.echo(comm_args, my_environ)
     elif comm_args[0] == 'env':
-        ShellCommands.print_env(comm_args, my_environ)
+        output = ShellCommands.print_env(comm_args, my_environ)
     elif comm_args[0] == 'setenv':
-        my_environ = ShellCommands.set_env(comm_args, my_environ)
+        my_environ, output = ShellCommands.set_env(comm_args, my_environ)
     elif comm_args[0] == 'unsetenv':
-        my_environ = ShellCommands.unset_env(comm_args, my_environ)
+        my_environ, output  = ShellCommands.unset_env(comm_args, my_environ)
     else:
-        process(command, my_environ)
+        output = process(command, my_environ)
+    print('output is ', output)
 
 
 def viewtiful(my_environ):

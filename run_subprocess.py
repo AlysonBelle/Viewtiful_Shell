@@ -10,9 +10,11 @@ from os import listdir
 
 
 def print_process(output):
+    listing = ''
     for o in output:
+        listing = listing + o + '\n'
         print(o)
-    return output
+    return listing
 
 def command_error(output):
     print(output, " command not found")
@@ -47,7 +49,10 @@ def process(command, my_environ):
     if '/' not in path:
         return path
     try:
-        p = Popen([path, comms[1:][0]], stdout=PIPE, stderr=PIPE, stdin=PIPE)
+        if len(comms) > 1:
+            p = Popen([path, comms[1:][0]], stdout=PIPE, stderr=PIPE, stdin=PIPE)
+        else:
+            p = Popen(path, stdout=PIPE, stderr=PIPE, stdin=PIPE)
     except FileNotFoundError:
         return (command_error(comms[0]))
     output = p.stdout.read().decode('utf-8').split('\n')
