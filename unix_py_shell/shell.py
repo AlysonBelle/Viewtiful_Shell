@@ -50,13 +50,10 @@ class Commands():
         while i < len(command):
             if command[i][0] == '$':
                 try:
-                    print(my_environ[command[i][1:]], end=' ')
                     return (my_environ[command[i][1:]] + '\n')
                 except KeyError:
-                    print('Error : variable not found', end='')
                     return ("Error : variable not found\n")
             else:
-                print(command[i], end=' ')
                 return ('')
             i += 1
         print('\n', end='')        
@@ -74,7 +71,6 @@ class Commands():
         error_msg = ''
         if len(command) != 3:
             error_msg = "Usage : setenv [VARIABLE] [VALUE]"
-            print('Usage : setenv [VARIABLE] [VALUE]')
         else:
             my_environ[command[1]] = command[2]
         return my_environ, error_msg
@@ -84,13 +80,11 @@ class Commands():
         error_msg = ''
         if len(command) != 2:
             error_msg = "Usage: unsetenv [VARIABLE]"
-            print('Usage: unsetenv [VARIABLE]')
         else:
             try:
                 del my_environ[command[1]]
             except KeyError:
                 error_msg = "Error : variable not found"
-                print('Error : variable not found')
         return my_environ, error_msg
 
 
@@ -135,4 +129,4 @@ def main():
     my_environ['SHELL'] = os.getcwd() + '/viewtiful.py'
     my_environ['SHLVL'] = str(int(my_environ['SHLVL']) + 1)
     viewtiful(my_environ)
-
+main()

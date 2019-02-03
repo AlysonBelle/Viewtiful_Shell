@@ -46,20 +46,22 @@ class Commands():
 
     def echo(self, command, my_environ):
         i = 1
+        string = ''
 
         while i < len(command):
             if command[i][0] == '$':
                 try:
                     print(my_environ[command[i][1:]], end=' ')
-                    return (my_environ[command[i][1:]] + '\n')
+                    string = string + my_environ[command[i][1:]] + ' '
                 except KeyError:
-                    print('Error : variable not found', end='')
-                    return ("Error : variable not found\n")
+                    string = string + ' '
             else:
+                string = string + command[i] + ' '
                 print(command[i], end=' ')
-                return ('')
             i += 1
-        print('\n', end='')        
+        string = string + ' '
+        print('\n', end='') 
+        return string
 
 
     def print_env(self, command, my_environ):

@@ -13,7 +13,6 @@ def print_process(output):
     listing = ''
     for o in output:
         listing = listing + o + '\n'
-        print(o)
     return listing
 
 def command_error(output):
@@ -25,7 +24,6 @@ def find_program(command, my_environ):
     try:
         pathway = os.environ['PATH']
     except KeyError:
-        print('PATH environment variable not set')
         return 'PATH Environment variable not set'
     directories = pathway.split(':')
     for d in directories:
