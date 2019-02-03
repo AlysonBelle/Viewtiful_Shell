@@ -31,12 +31,10 @@ def shell():
     if init_sh == False:
         my_environ, ShellCommand = init_shell()
         init_sh = True
-    print('here')
     if prompt.validate_on_submit():
-        print('not here')
         command = prompt.prompt.data
         output, my_environ = parse(command, ShellCommand, my_environ)
-        print('output is ', output)
+        output = output.split('\n')
     return render_template('shell.html', output=output, prompt=prompt)
 
 

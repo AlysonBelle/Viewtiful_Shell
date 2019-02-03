@@ -9,7 +9,9 @@
 	</title>
 </head>
 <body>
-	<h3>{{ output }}</h3>
+	{% for o in output %}
+		<p>{{ o }}</p>
+	{% endfor %}
 	<form method='POST' action=''>
 		{{ prompt.csrf_token }}
 		{{ prompt.prompt }}
