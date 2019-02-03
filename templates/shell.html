@@ -9,6 +9,11 @@
 	</title>
 </head>
 <body>
-
+	<h3>{{ output }}</h3>
+	<form method='POST' action=''>
+		{{ prompt.csrf_token }}
+		{{ prompt.prompt }}
+		{{ prompt.submit }}
+	</form>
 </body>
 </html>

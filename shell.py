@@ -115,11 +115,10 @@ def parse(command, ShellCommands, my_environ):
     else:
         output = process(command, my_environ)
     print('output is ', output)
-    return output
+    return output, my_environ
 
-def viewtiful(my_environ):
-    ShellCommand = Commands()
 
+def viewtiful(my_environ, ShellCommand):
     while True:
        command = input("$>")
        command = command.rstrip().lstrip()
@@ -130,9 +129,11 @@ def viewtiful(my_environ):
 
 
 
-def main():
+def init_shell():
     my_environ = os.environ.copy()
     my_environ['SHELL'] = os.getcwd() + '/viewtiful.py'
     my_environ['SHLVL'] = str(int(my_environ['SHLVL']) + 1)
-    viewtiful(my_environ)
+    ShellCommand = Commands()
+    return my_environ, ShellCommand
+    #viewtiful(my_environ, ShellCommand)
 
